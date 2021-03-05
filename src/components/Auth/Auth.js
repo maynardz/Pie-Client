@@ -2,12 +2,40 @@ import {useState} from 'react';
 import './Auth.css';
 
 const Auth = (props) => {
+console.log(props);
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [login, setLogin] = useState(true);
+
+    const handleSubmit = event => {
+        event.preventDefault();
+
+        let reqBody = login ? 
+            {
+                email: email,
+                password: password
+            } : {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password
+            };
+
+        let url = login ? 'http://localhost:5000/user/login' : 'http://localhost:5000/user/register';
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(reqBody),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+        .then(response => response.json())
+        .then(json => props.updateLocalStorage(json.token))
+    }
 
     const title = () => {
         return login ? 'Login' : 'Signup';
@@ -41,12 +69,12 @@ const Auth = (props) => {
 
     return(
         <div>
-           <form>
+           <form onSubmit={handleSubmit}>
                <h1>{title()}</h1>
                {signupFields()}
                <label htmlFor='email'>Email:</label>
                <br />
-               <input type='text' id='email' value={email} onChange={(e) => {setEmail(e.target.value); console.log(e)}} />
+               <input type='text' id='email' value={email} onChange={(e) => setEmail(e.target.value)} />
                <br />
                <label htmlFor='password'>Password:</label>
                <br />
