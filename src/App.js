@@ -15,7 +15,7 @@ function App() {
     if(localStorage.getItem('token')) {
       setSessionToken(localStorage.getItem('token'));
     }
-  });
+  }, []);
 
   const updateLocalStorage = newToken => {
     localStorage.setItem('token', newToken);
@@ -28,7 +28,7 @@ function App() {
   }
 
   const viewConductor = () => {
-    return sessionToken !== undefined ? <Pies /> : <Auth updateLocalStorage={updateLocalStorage} />
+    return sessionToken !== undefined ? <Pies sessionToken={sessionToken} /> : <Auth updateLocalStorage={updateLocalStorage} />
   }
 
   return (
